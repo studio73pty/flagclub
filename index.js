@@ -26,6 +26,12 @@ const buscarPostId = require('./controllers/blog/BuscarPost');
 const modificarPost = require('./controllers/blog/ModificarPost');
 const borrarPost = require('./controllers/blog/EliminarPost');
 
+//--- eventos
+const buscarEventos = require('./controllers/eventos/BuscarEventos');
+const buscarEventoId = require('./controllers/eventos/BuscarEvento');
+const modificarEvento = require('./controllers/eventos/ModificarEvento');
+const borrarEvento = require('./controllers/eventos/EliminarEvento');
+
 
 // Llamando a Uploads y Cloudinary
 const upload = require('./controllers/ImageUploader/Multer');
@@ -273,6 +279,111 @@ app.delete('/borrar-producto/:id', (req, res) => {borrarProducto.handleEliminarP
  // Borrar post
  app.delete('/borrar-post/:id', (req, res) => {borrarPost.handleBorrarPost(req, res, db)});
    
+
+//--------------------- Endpoints de Eventos
+//Buscar todas las eventos
+app.get('/home-eventos', (req,res) => {buscarEventos.handleBuscarEventos(req, res, db)});
+
+//Buscar evento por ID
+app.get('/buscar-evento/:id', (req, res) => {buscarEventoId.handleBuscarEventoId(req, res, db)});
+
+//Agregar evento
+app.use('/agregar-evento', upload.array('image'), async(req, res) => {
+    const uploader = async (path) => await cloudinary.uploads(path, 'FlagClub');
+    let safeUrl = '';
+    const insert = (str, index, value) => {
+      safeUrl = str.substr(0, index) + value + str.substr(index);
+  }
+  
+    const { 
+      nombre,
+      intro,
+      descripcion,
+      fecha 
+        } = req.body;
+  
+  
+    if (req.method === 'POST') {
+        const urls = [];
+        const files = req.files;
+  
+        for(const file of files) {
+            const { path } = file;
+  
+            const newPath = await uploader(path);
+  
+            urls.push(newPath);
+  
+            fs.unlinkSync(path);
+        
+            };
+  
+            const unsafeUrl = urls[0].url;
+            insert(unsafeUrl, 4, 's');
+  
+               db('eventos').insert({
+                nombre,
+                intro,
+                evento,
+                descripcion,
+                fecha,   
+                imagen: safeUrl   
+             }).then(res.status(200).json('evento agregado'))
+               // id: urls[0].id
+          } else {
+        res.status(405).json({
+            err: "No se pudo subir la imagen"
+        })
+    }
+  })
+  
+//Modificar evento
+app.patch('/modificar-evento/:id', (req, res) => {modificarEvento.handleModificarEvento(req, res, db)});
+
+//Modificar Imagen Evento
+app.use('/modificar-imagen-evento/:id', upload.array('image'), async(req, res) => {
+    const uploader = async (path) => await cloudinary.uploads(path, 'FlagClub');
+    let safeUrl = '';
+    const insert = (str, index, value) => {
+      safeUrl = str.substr(0, index) + value + str.substr(index);
+  }
+    const { id } = req.params;
+    if (req.method === 'PATCH') {
+        const urls = [];
+        const files = req.files;
+  
+        for(const file of files) {
+            const { path } = file;
+  
+            const newPath = await uploader(path);
+  
+            urls.push(newPath);
+  
+            fs.unlinkSync(path);
+        
+            };
+            const unsafeUrl = urls[0].url;
+            insert(unsafeUrl, 4, 's');
+  
+              db('eventos').where({id: id}).update({             
+                imagen: safeUrl
+               // id: urls[0].id
+  
+            })
+               .then(console.log)           
+            
+        res.status(200).json('exito');
+    } else {
+        res.status(405).json({
+            err: "No se pudo subir la imagen"
+        })
+    }
+    
+  })
+  
+// Borrar evento
+app.delete('/borrar-evento/:id', (req, res) => {borrarEvento.handleBorrarEvento(req, res, db)});
+  
 
 
 
