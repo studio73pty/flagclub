@@ -15,16 +15,16 @@ const registro = require('./controllers/usuario/Registro');
 const inicioSesion = require('./controllers/usuario/IniciarSesion');
 
 //--- productos
+const buscarProductos = require('./controllers/productos/HomeProductos');
 const buscarProducto = require('./controllers/productos/BuscarProducto');
 const modificarProducto = require('./controllers/productos/ModificarProducto');
 const borrarProducto = require('./controllers/productos/EliminarProducto');
-const buscarProductos = require('./controllers/productos/HomeProductos');
 
 //--- blog posts
-const buscarPosts = require('./controllers/productos/BuscarPosts');
-const buscarPostId = require('./controllers/productos/BuscarPost');
-const modificarPost = require('./controllers/productos/ModificarPost');
-const borrarPost = require('./controllers/productos/BorrarPost');
+const buscarPosts = require('./controllers/blog/BuscarPosts');
+const buscarPostId = require('./controllers/blog/BuscarPost');
+const modificarPost = require('./controllers/blog/ModificarPost');
+const borrarPost = require('./controllers/blog/EliminarPost');
 
 
 // Llamando a Uploads y Cloudinary
@@ -187,7 +187,7 @@ app.delete('/borrar-producto/:id', (req, res) => {borrarProducto.handleEliminarP
    
    const fecha = new Date();
      const { 
-       titulo,
+       nombre,
        intro,
        contenido,
          } = req.body;
@@ -212,7 +212,7 @@ app.delete('/borrar-producto/:id', (req, res) => {borrarProducto.handleEliminarP
              insert(unsafeUrl, 4, 's');
    
                 db('blog').insert({
-                 titulo,
+                 nombre,
                  intro,
                  contenido,
                  fecha,   
