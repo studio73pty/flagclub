@@ -26,13 +26,6 @@ const buscarProducto = require('./controllers/productos/BuscarProducto');
 const modificarProducto = require('./controllers/productos/ModificarProducto');
 const borrarProducto = require('./controllers/productos/EliminarProducto');
 
-//--- eventos
-const buscarEventos = require('./controllers/eventos/BuscarEventos');
-const buscarEventoId = require('./controllers/eventos/BuscarEvento');
-const modificarEvento = require('./controllers/eventos/ModificarEvento');
-const borrarEvento = require('./controllers/eventos/EliminarEvento');
-
-
 // Llamando a Uploads y Cloudinary
 const upload = require('./controllers/ImageUploader/Multer');
 const cloudinary = require('./controllers/ImageUploader/Cloudinary');
@@ -40,7 +33,8 @@ const cloudinary = require('./controllers/ImageUploader/Cloudinary');
 
 //  Llamando al router
 const blog = require('./routes/blog');
-const eventos = require('./routes/eventos')
+const eventos = require('./routes/eventos');
+const productos = require('./routes/productos');
 
 const app = express();
 
@@ -184,6 +178,11 @@ app.use('/api/v1/blog', blog);
 
 //---- Eventos
 app.use('/api/v1/eventos', eventos);
+
+//---- Productos
+app.use('/api/v1/productos', productos);
+
+
   
 
 
