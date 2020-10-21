@@ -87,7 +87,7 @@ exports.subirImagenPost = asyncHandler(async (req, res, next) => {
     }
 
     //  Crear el nombre del archivo personalizado
-    file.name = `foto_${post[0].id}${path.parse(file.name).ext}`
+    file.name = `blog_foto_${post[0].id}${path.parse(file.name).ext}`
     
     file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
         if(err){
