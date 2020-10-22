@@ -60,15 +60,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ----------  Inicio de endpoints
 app.get('/', (req, res) => {res.json('deporte vivo!')});
 
-// Registro e inicio de sesion
-
-//Registro
-app.post('/registro', (req, res) =>  { registro.handleRegistro(req, res, db, bcrypt) });
-
-//Iniciar Sesion
-app.post('/iniciar-sesion', (req, res) =>  { inicioSesion.handleInicioSesion(req, res, db, bcrypt) });
-
-
 //---- Blog
 app.use('/api/v1/blog', blog);
 
