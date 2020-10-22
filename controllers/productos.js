@@ -64,3 +64,94 @@ exports.agregarProducto = asyncHandler(async (req, res, next) => {
     })
 });
 
+//  @Descripcion    Agrega una imagen al producto
+//  @Ruta y Metodo  PUT api/v1/productos/:id/imagen
+//  @Acceso         Privada
+exports.subirImagenProducto = asyncHandler(async (req, res, next) => {
+    const producto = await db('productos').select().where({ id: req.params.id })
+
+    //  Comprobando si se subio un archivo
+    if(!req.files){
+        return next(new ErrorResponse('Por favor suba un archivo', 400))
+    }
+    
+
+    //  Colocando el objeto de archivo en una variable
+    const file = req.files.file;
+
+    //  Comprobando si el archivo subido es ina imagen, sea JPG o PNG
+    if(!file.mimetype.startsWith('image')){
+        return next(new ErrorResponse('Por favor suba un archivo tipo imagen, PNG o JPG', 400))
+    }
+
+    //  Comprobando el tamaño del archivo
+    if(file.size > process.env.MAX_FILE_UPLOAD){
+        return next(new ErrorResponse(`Por favor suba un archivo inferior a ${process.env.MAX_FILE_UPLOAD}`, 400))
+    }
+
+    //  Crear el nombre del archivo personalizado
+    file.name = `producto_foto_${producto[0].id}${producto[0].nombre}${path.parse(file.name).ext}`
+    
+    file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
+        if(err){
+            console.error(err);
+            return next(new ErrorResponse('Problema subiendo el archivo', 500))
+        }
+        //  Guardando el nombre del archivo en la base de datos
+        await db('productos').where({id: req.params.id}).update({
+            imagen: file.name
+        })
+
+        res.status(200).json({
+            success: true,
+            data: file.name
+        })
+    })
+})
+
+
+
+//  @Descripcion    Modificar un producto
+//  @Ruta y Metodo  PUT api/v1/productos/:id
+//  @Acceso         Privada
+exports.modificarProducto = asyncHandler(async (req, res, next) => {
+    const { 
+        nombre,
+        descripcion,
+        precio,
+        cantidad
+        } = req.body;
+
+    let post = await db('productos').select().where({ id: req.params.id })
+
+    if(post.length <= 0){
+        return next(new ErrorResponse('No se ha conseguido el post', 404))
+    }
+  
+    await db('productos').where({ id: req.params.id })
+   .update({     
+    nombre,
+    descripcion,
+    precio,
+    cantidad
+    })
+
+    post = await db('productos').select().where({ id: req.params.id })
+
+    res.status(200).json({
+        success: true,
+        data: post
+    })
+})
+
+
+//  @Descripcion    Eliminar un producto
+//  @Ruta y Metodo  DELETE api/v1/producto/:id
+//  @Acceso         Privada
+exports.eliminarProducto = asyncHandler(async (req, res, next) =>{
+    await db('productos').where({ id: req.params.id }).del();
+
+    res.status(200).json({
+        success: true,
+    })
+})

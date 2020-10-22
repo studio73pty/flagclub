@@ -3,7 +3,10 @@ const express = require('express');
 const {
     buscarProductos,
     buscarProducto,
-    agregarProducto
+    agregarProducto,
+    subirImagenProducto,
+    modificarProducto,
+    eliminarProducto
 } = require('../controllers/productos');
 
 const router = express.Router();
@@ -15,6 +18,12 @@ router.route('/')
 
 router.route('/:id')
     .get(buscarProducto)
+    .put(modificarProducto)
+    .delete(eliminarProducto)
+;
+
+router.route('/:id/imagen')
+    .put(subirImagenProducto)
 ;
 
 module.exports = router;
