@@ -7,23 +7,25 @@ const {
     modificarEvento,
     eliminarEvento
 } = require('../controllers/eventos');
-const EliminarEvento = require('../controllers/eventos/EliminarEvento');
+
 
 
 const router = express.Router();
 
+const { protect } = require('../middleware/auth');
+
 router.route('/')
     .get(buscarEventos)
-    .post(agregarEvento)
+    .post(protect, agregarEvento)
 ;
 
 router.route('/:id')
     .get(buscarEvento)
-    .put(modificarEvento)
-    .delete(eliminarEvento)
+    .put(protect, modificarEvento)
+    .delete(protect, eliminarEvento)
 ;
 
-router.route('/:id/imagen').put(subirImagenEvento)
+router.route('/:id/imagen').put(protect, subirImagenEvento)
 ;
 
 module.exports = router;

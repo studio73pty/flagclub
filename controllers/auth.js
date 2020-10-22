@@ -40,7 +40,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     
     const token = getSignedJwtToken(user);
     const options = {
-        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         httpOnly: true
     };
 
@@ -92,6 +92,19 @@ exports.login = asyncHandler(async (req, res, next) => {
 
     sendTokenResponse(user, 200, res)
 
+})
+
+//  @Descripcion    Obtener el usuario ingresado
+//  @Ruta y Metodo  GET api/v1/auth/me
+//  @Acceso         Privada
+exports.getMe = asyncHandler(async (req, res, next) => {
+    const id = req.user[0].id;
+    const usuario = await db('clientes').select().where({ id });
+
+    res.status(200).json({
+        success: true,
+        data: usuario
+    })
 })
 
 

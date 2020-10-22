@@ -29,7 +29,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
         
         // He tenido problemas asignando el usuario cuando se registra o inicia sesion, 
         //este IF valida si el usuario que inicio sesion fue por registro o login
-        if(decoded.id[0].usuario){
+        if(decoded.id[0].nombre){
             //  Se ejecuta este codigo si se ingreso por login
             req.user  = await db.select().from('registro').where({ id: decoded.id[0].id});
 

@@ -40,6 +40,9 @@ exports.buscarProducto = asyncHandler( async (req, res, next) => {
 //  @Ruta y Metodo  POST api/v1/productos
 //  @Acceso         Privada
 exports.agregarProducto = asyncHandler(async (req, res, next) => {
+    if(req.user[0].rol !== 'admin'){
+        return next(new ErrorResponse('No tiene permiso para agregar un producto', 401))
+    }
     const fecha = new Date();
     const { 
         nombre,
@@ -68,6 +71,9 @@ exports.agregarProducto = asyncHandler(async (req, res, next) => {
 //  @Ruta y Metodo  PUT api/v1/productos/:id/imagen
 //  @Acceso         Privada
 exports.subirImagenProducto = asyncHandler(async (req, res, next) => {
+    if(req.user[0].rol !== 'admin'){
+        return next(new ErrorResponse('No tiene permiso para modificar un producto', 401))
+    }
     const producto = await db('productos').select().where({ id: req.params.id })
 
     //  Comprobando si se subio un archivo
@@ -115,6 +121,9 @@ exports.subirImagenProducto = asyncHandler(async (req, res, next) => {
 //  @Ruta y Metodo  PUT api/v1/productos/:id
 //  @Acceso         Privada
 exports.modificarProducto = asyncHandler(async (req, res, next) => {
+    if(req.user[0].rol !== 'admin'){
+        return next(new ErrorResponse('No tiene permiso para modificar un producto', 401))
+    }
     const { 
         nombre,
         descripcion,
@@ -149,6 +158,9 @@ exports.modificarProducto = asyncHandler(async (req, res, next) => {
 //  @Ruta y Metodo  DELETE api/v1/producto/:id
 //  @Acceso         Privada
 exports.eliminarProducto = asyncHandler(async (req, res, next) =>{
+    if(req.user[0].rol !== 'admin'){
+        return next(new ErrorResponse('No tiene permiso para eliminar un producto', 401))
+    }
     await db('productos').where({ id: req.params.id }).del();
 
     res.status(200).json({

@@ -38,6 +38,9 @@ exports.buscarEvento = asyncHandler( async (req, res, next) => {
 //  @Ruta y Metodo  POST api/v1/blog/
 //  @Acceso         Privada
 exports.agregarEvento = asyncHandler(async (req, res, next) => {
+    if(req.user[0].rol !== 'admin'){
+        return next(new ErrorResponse('No tiene permiso para agregar un evento', 401))
+    }
     const fecha = new Date();
     const { 
       nombre,
@@ -64,6 +67,10 @@ exports.agregarEvento = asyncHandler(async (req, res, next) => {
 //  @Ruta y Metodo  PUT api/v1/eventos/:id/imagen
 //  @Acceso         Privada
 exports.subirImagenEvento = asyncHandler(async (req, res, next) => {
+    if(req.user[0].rol !== 'admin'){
+        return next(new ErrorResponse('No tiene permiso para modificar un evento', 401))
+    }
+
     const post = await db('eventos').select().where({ id: req.params.id })
 
     //  Comprobando si se subio un archivo
@@ -110,6 +117,9 @@ exports.subirImagenEvento = asyncHandler(async (req, res, next) => {
 //  @Ruta y Metodo  PUT api/v1/evento/:id
 //  @Acceso         Privada
 exports.modificarEvento = asyncHandler(async (req, res, next) => {
+    if(req.user[0].rol !== 'admin'){
+        return next(new ErrorResponse('No tiene permiso para modificar un evento', 401))
+    }
     const { 
       nombre,
       intro,
@@ -142,6 +152,9 @@ exports.modificarEvento = asyncHandler(async (req, res, next) => {
 //  @Ruta y Metodo  DELETE api/v1/evento/:id
 //  @Acceso         Privada
 exports.eliminarEvento = asyncHandler(async (req, res, next) =>{
+    if(req.user[0].rol !== 'admin'){
+        return next(new ErrorResponse('No tiene permiso para eliminar un evento', 401))
+    }
     await db('eventos').where({ id: req.params.id }).del();
 
     res.status(200).json({

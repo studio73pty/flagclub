@@ -10,15 +10,17 @@ const{
 
 const router = express.Router();
 
+const { protect } = require('../middleware/auth');
+
 router.route('/')
     .get(buscarPosts)
-    .post(agregarPost);
+    .post(protect, agregarPost);
 
 router.route('/:id')
     .get(buscarPost)
-    .put(modificarPost)
-    .delete(eliminarPost)
+    .put(protect, modificarPost)
+    .delete(protect, eliminarPost)
 
-router.route('/:id/imagen').put(subirImagenPost)
+router.route('/:id/imagen').put(protect, subirImagenPost)
 
 module.exports = router;

@@ -11,19 +11,21 @@ const {
 
 const router = express.Router();
 
+const { protect } = require('../middleware/auth');
+
 router.route('/')
     .get(buscarProductos)
-    .post(agregarProducto);
+    .post(protect, agregarProducto);
 ;
 
 router.route('/:id')
     .get(buscarProducto)
-    .put(modificarProducto)
-    .delete(eliminarProducto)
+    .put(protect, modificarProducto)
+    .delete(protect, eliminarProducto)
 ;
 
 router.route('/:id/imagen')
-    .put(subirImagenProducto)
+    .put(protect, subirImagenProducto)
 ;
 
 module.exports = router;

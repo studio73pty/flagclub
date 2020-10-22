@@ -38,6 +38,9 @@ exports.buscarPost = asyncHandler( async (req, res, next) => {
 //  @Ruta y Metodo  POST api/v1/blog/
 //  @Acceso         Privada
 exports.agregarPost = asyncHandler(async (req, res, next) => {
+   if(req.user[0].rol !== 'admin'){
+        return next(new ErrorResponse('No tiene permiso para agregar un post', 401))
+    }
     const fecha = new Date();
     const { 
       nombre,
@@ -65,6 +68,9 @@ exports.agregarPost = asyncHandler(async (req, res, next) => {
 //  @Ruta y Metodo  PUT api/v1/blog/:id/imagen
 //  @Acceso         Privada
 exports.subirImagenPost = asyncHandler(async (req, res, next) => {
+    if(req.user[0].rol !== 'admin'){
+        return next(new ErrorResponse('No tiene permiso para modificar un post', 401))
+    }
     const post = await db('blog').select().where({ id: req.params.id })
 
     //  Comprobando si se subio un archivo
@@ -110,6 +116,9 @@ exports.subirImagenPost = asyncHandler(async (req, res, next) => {
 //  @Ruta y Metodo  PUT api/v1/blog/:id
 //  @Acceso         Privada
 exports.modificarPost = asyncHandler(async (req, res, next) => {
+    if(req.user[0].rol !== 'admin'){
+        return next(new ErrorResponse('No tiene permiso para mosificar un post', 401))
+    }
     const { 
       nombre,
       intro,
@@ -142,6 +151,9 @@ exports.modificarPost = asyncHandler(async (req, res, next) => {
 //  @Ruta y Metodo  DELETE api/v1/blog/:id
 //  @Acceso         Privada
 exports.eliminarPost = asyncHandler(async (req, res, next) =>{
+    if(req.user[0].rol !== 'admin'){
+        return next(new ErrorResponse('No tiene permiso para eliminar un post', 401))
+    }
     await db('blog').where({ id: req.params.id }).del();
 
     res.status(200).json({
