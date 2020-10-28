@@ -74,7 +74,7 @@ exports.subirImagenProducto = asyncHandler(async (req, res, next) => {
     if(req.user[0].rol !== 'admin'){
         return next(new ErrorResponse('No tiene permiso para modificar un producto', 401))
     }
-    const producto = await db('productos').select().where({ id: req.params.id })
+    let producto = await db('productos').select().where({ id: req.params.id })
 
     //  Comprobando si se subio un archivo
     if(!req.files){
@@ -108,13 +108,14 @@ exports.subirImagenProducto = asyncHandler(async (req, res, next) => {
             imagen: file.name
         })
 
+        producto = await db('productos').select().where({ id: req.params.id })
+
         res.status(200).json({
             success: true,
-            data: file.name
+            data: producto
         })
     })
 })
-
 
 
 //  @Descripcion    Modificar un producto
