@@ -41,11 +41,11 @@ exports.agregarEvento = asyncHandler(async (req, res, next) => {
     if(req.user[0].rol !== 'admin'){
         return next(new ErrorResponse('No tiene permiso para agregar un evento', 401))
     }
-    const fecha = new Date();
     const { 
       nombre,
       intro,
       descripcion,
+      fecha
         } = req.body;
   
    const eventoId = await db('eventos').insert({
@@ -124,6 +124,7 @@ exports.modificarEvento = asyncHandler(async (req, res, next) => {
       nombre,
       intro,
       descripcion,
+      fecha
         } = req.body;
 
     let post = await db('eventos').select().where({ id: req.params.id })
@@ -136,6 +137,7 @@ exports.modificarEvento = asyncHandler(async (req, res, next) => {
    .update({     
     nombre,
     intro,
+    fecha,
     descripcion
     })
 

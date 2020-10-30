@@ -35,6 +35,7 @@ const cloudinary = require('./controllers/ImageUploader/Cloudinary');
 const blog = require('./routes/blog');
 const eventos = require('./routes/eventos');
 const productos = require('./routes/productos');
+const galeria = require('./routes/galeria');
 const auth = require('./routes/auth');
 
 const app = express();
@@ -68,6 +69,9 @@ app.use('/api/v1/eventos', eventos);
 
 //---- Productos
 app.use('/api/v1/productos', productos);
+
+//---- Galeria
+app.use('/api/v1/galeria', galeria);
 
 //---- Auth
 app.use('/api/v1/auth', auth);
